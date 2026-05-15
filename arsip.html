@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiARSIP — Semua Berkas</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#0E7B62;--teal2:#16A884;--navy:#0B1D35;--gold:#C9973A;--red:#DC2626;--light:#EEF2F8;--white:#fff;--border:#E2E8F0;--text1:#0B1D35;--text2:#4A5568;--text3:#94A3B8}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--light);display:flex;height:100vh;overflow:hidden}
+.sb{width:230px;background:linear-gradient(180deg,#0B1D35,#0E2646);display:flex;flex-direction:column;flex-shrink:0;height:100vh;overflow-y:auto;scrollbar-width:none}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sb-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sb-logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--teal2));display:flex;align-items:center;justify-content:center;font-size:18px}
+.sb-appname{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:1px}
+.sb-inst{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-user{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.05);border-radius:10px;padding:9px 11px}
+.sb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E5B55A);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--navy);flex-shrink:0}
+.sb-uname{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.8);max-width:100px;overflow:hidden;text-overflow:ellipsis}
+.sb-urole{font-size:9px;color:rgba(255,255,255,.28)}
+.sb-dot{width:7px;height:7px;border-radius:50%;background:#34D399;margin-left:auto;flex-shrink:0}
+.sb-sec{font-size:9px;font-weight:800;color:rgba(255,255,255,.2);letter-spacing:1.3px;text-transform:uppercase;padding:10px 14px 4px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 12px;margin:1px 8px;border-radius:9px;cursor:pointer;color:rgba(255,255,255,.42);font-size:12.5px;font-weight:500;transition:all .15s;border-left:2px solid transparent;text-decoration:none}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.75)}
+.sb-item.on{background:rgba(14,123,98,.2);color:#34D399;font-weight:700;border-left-color:var(--teal)}
+.sb-emo{font-size:15px;flex-shrink:0}
+.sb-badge{margin-left:auto;padding:2px 7px;border-radius:100px;font-size:9px;font-weight:800;background:var(--teal);color:#fff}
+.sb-badge.red{background:var(--red)}
+.sb-logout{margin:8px;padding:9px 12px;border-radius:9px;cursor:pointer;color:rgba(255,255,255,.35);font-size:12px;display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.06);background:none;width:calc(100% - 16px);font-family:inherit}
+.sb-logout:hover{background:rgba(220,38,38,.15);color:#FCA5A5}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-ttl{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--navy)}
+.page-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.btn-green{display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;text-decoration:none}
+.filter-section{background:var(--white);border-bottom:1px solid var(--border);padding:12px 22px;flex-shrink:0}
+.filter-row1{display:flex;gap:10px;margin-bottom:10px;align-items:center}
+.search-wrap{flex:1;position:relative}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;background:#F4F7FB;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:13px;color:var(--text1);outline:none}
+.search-wrap input:focus{border-color:var(--teal)}
+.search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.4;pointer-events:none}
+.filter-select{padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:12.5px;color:var(--text2);background:var(--white);cursor:pointer;outline:none}
+.filter-row2{display:flex;gap:6px;flex-wrap:wrap}
+.ftag{padding:5px 12px;border-radius:100px;border:1.5px solid var(--border);font-size:11.5px;font-weight:600;cursor:pointer;color:var(--text2);background:var(--white);transition:all .15s;white-space:nowrap}
+.ftag:hover{border-color:var(--teal);color:var(--teal)}
+.ftag.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.content{flex:1;overflow-y:auto;padding:16px 22px}
+.result-info{font-size:12px;color:var(--text3);margin-bottom:12px}
+.result-info strong{color:var(--navy)}
+.doc-table{background:var(--white);border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.doc-row{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid #F7F9FB;cursor:pointer;transition:background .12s;text-decoration:none}
+.doc-row:hover{background:#F9FBFD}
+.doc-row:last-child{border-bottom:none}
+.doc-ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.doc-info{flex:1;min-width:0}
+.doc-nm{font-size:12.5px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-meta{font-size:10.5px;color:var(--text3);margin-top:2px}
+.doc-right{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.chip{font-size:9.5px;padding:3px 9px;border-radius:100px;font-weight:800}
+.type-chip{font-size:9px;padding:2px 7px;border-radius:5px;background:#F1F5F9;color:#64748B;font-family:monospace;font-weight:700}
+.rahasia-chip{font-size:9px;padding:2px 7px;border-radius:100px;background:#FEE2E2;color:var(--red);font-weight:800}
+.empty{text-align:center;padding:48px 20px;color:var(--text3)}
+.empty .emo{font-size:40px;display:block;margin-bottom:10px;opacity:.5}
+.skel{background:linear-gradient(90deg,#F0F4F8 25%,#E2E8F0 50%,#F0F4F8 75%);background-size:200% 100%;animation:skel 1.5s infinite;border-radius:8px;height:14px}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.show{display:flex}
+.modal{background:var(--white);border-radius:20px;padding:28px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-ttl{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.modal-sub{font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;padding:11px;border-radius:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none}
+.btn-batal-m{background:#F1F4F9;color:var(--text2)}
+.btn-ajukan{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff}
+</style>
+</head>
+<body>
+<div class="sb">
+  <div class="sb-brand">
+    <div class="sb-logo-row"><div class="sb-logo">🗃️</div><div><div class="sb-appname" id="sbAppName">SiARSIP</div><div class="sb-inst" id="sbInstName">—</div></div></div>
+    <div class="sb-user"><div class="sb-av" id="sbAv">?</div><div><div class="sb-uname" id="sbNama">—</div><div class="sb-urole" id="sbRole">—</div></div><div class="sb-dot"></div></div>
+  </div>
+  <div class="sb-sec">MENU UTAMA</div>
+  <a class="sb-item" href="dashboard.html"><span class="sb-emo">⊞</span>Dashboard</a>
+  <a class="sb-item on" href="arsip.html"><span class="sb-emo">🗂️</span>Semua Berkas</a>
+  <a class="sb-item" href="input.html"><span class="sb-emo">➕</span>Input Dokumen</a>
+  <div class="sb-sec">KATEGORI</div>
+  <a class="sb-item" href="arsip.html?kat=Surat Masuk"><span class="sb-emo">📥</span>Surat Masuk</a>
+  <a class="sb-item" href="arsip.html?kat=Surat Keluar"><span class="sb-emo">📤</span>Surat Keluar</a>
+  <a class="sb-item" href="arsip.html?kat=SK / SPK"><span class="sb-emo">📋</span>SK / SPK</a>
+  <a class="sb-item" href="arsip.html?kat=Kontrak"><span class="sb-emo">📄</span>Kontrak</a>
+  <a class="sb-item" href="arsip.html?kat=Laporan"><span class="sb-emo">📊</span>Laporan</a>
+  <a class="sb-item" href="arsip.html?kat=Berita Acara"><span class="sb-emo">📝</span>Berita Acara</a>
+  <a class="sb-item" href="arsip.html?kat=Keuangan"><span class="sb-emo">💰</span>Keuangan</a>
+  <a class="sb-item" href="arsip.html?kat=Surat Jalan"><span class="sb-emo">🚗</span>Surat Jalan</a>
+  <a class="sb-item" href="arsip.html?kat=Surat Cuti"><span class="sb-emo">🏖️</span>Surat Cuti</a>
+  <a class="sb-item" href="arsip.html?kat=Surat SP / Peringatan"><span class="sb-emo">⚠️</span>Surat SP</a>
+  <div class="sb-sec" id="sbAdminSec" style="display:none">PENGELOLAAN</div>
+  <a class="sb-item" href="arsip.html?rahasia=YA" id="sbRahasia" style="display:none"><span class="sb-emo">🔒</span>Dok. Rahasia</a>
+  <a class="sb-item" href="akun.html" id="sbAkun" style="display:none"><span class="sb-emo">👥</span>Kelola Akun</a>
+  <a class="sb-item" href="log.html" id="sbLog" style="display:none"><span class="sb-emo">📜</span>Log Aktivitas</a>
+  <a class="sb-item" href="pengaturan.html" id="sbPengaturan" style="display:none"><span class="sb-emo">⚙️</span>Pengaturan</a>
+  <div style="margin-top:auto;padding:8px"><button class="sb-logout" onclick="SIARSIP.hapusSesi();window.location.href='index.html'">🚪 &nbsp;Keluar</button></div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div><div class="page-ttl" id="pageTitle">Semua Berkas</div><div class="page-sub" id="pageSub">Seluruh dokumen arsip terdaftar</div></div>
+    <a class="btn-green" href="input.html">➕ &nbsp;Input Dokumen</a>
+  </div>
+  <div class="filter-section">
+    <div class="filter-row1">
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input id="inpCari" placeholder="Cari nomor surat, perihal, asal/tujuan..." oninput="debounceSearch()">
+      </div>
+      <select class="filter-select" id="selDivisi" onchange="muat()">
+        <option value="">Semua Divisi</option>
+        <option>Umum</option><option>HRD</option><option>Keuangan</option><option>Operasional</option><option>Teknik</option>
+      </select>
+      <select class="filter-select" id="selSort" onchange="sortDocs()">
+        <option value="terbaru">Terbaru</option>
+        <option value="terlama">Terlama</option>
+        <option value="nama">Nama A–Z</option>
+      </select>
+    </div>
+    <div class="filter-row2" id="filterKat">
+      <div class="ftag on" onclick="pilihKat(this,'')">📂 Semua</div>
+      <div class="ftag" onclick="pilihKat(this,'Surat Masuk')">📥 Surat Masuk</div>
+      <div class="ftag" onclick="pilihKat(this,'Surat Keluar')">📤 Surat Keluar</div>
+      <div class="ftag" onclick="pilihKat(this,'SK / SPK')">📋 SK / SPK</div>
+      <div class="ftag" onclick="pilihKat(this,'Kontrak')">📄 Kontrak</div>
+      <div class="ftag" onclick="pilihKat(this,'Laporan')">📊 Laporan</div>
+      <div class="ftag" onclick="pilihKat(this,'Berita Acara')">📝 Berita Acara</div>
+      <div class="ftag" onclick="pilihKat(this,'Keuangan')">💰 Keuangan</div>
+      <div class="ftag" onclick="pilihKat(this,'Surat Jalan')">🚗 Surat Jalan</div>
+      <div class="ftag" onclick="pilihKat(this,'Surat Cuti')">🏖️ Surat Cuti</div>
+      <div class="ftag" onclick="pilihKat(this,'Surat SP / Peringatan')">⚠️ Surat SP</div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="result-info" id="resultInfo">Memuat...</div>
+    <div class="doc-table" id="docTable">
+      <div style="padding:20px"><div class="skel" style="margin-bottom:12px"></div><div class="skel" style="margin-bottom:12px;width:80%"></div><div class="skel" style="width:60%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalIzin">
+  <div class="modal">
+    <div class="modal-ttl">🔒 Dokumen Rahasia</div>
+    <div class="modal-sub" id="modalSub">Dokumen ini bersifat rahasia.</div>
+    <div class="modal-btns">
+      <button class="btn-batal-m" onclick="tutupModal()">Batal</button>
+      <button class="btn-ajukan" onclick="ajukanIzin()">Ajukan Permintaan</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const sesi = SIARSIP.cekLogin();
+let katAktif = '', allDocs = [], debounceTimer = null, idRahasiaPending = null;
+const katStyle = {
+  'Surat Masuk':{bg:'#E0F4EF',c:'#0E7B62',ico:'📥'},'Surat Keluar':{bg:'#DBEAFE',c:'#1E40AF',ico:'📤'},
+  'SK / SPK':{bg:'#EDE9FE',c:'#6D28D9',ico:'📋'},'Kontrak':{bg:'#FEF3C7',c:'#B45309',ico:'📄'},
+  'Laporan':{bg:'#D1FAE5',c:'#065F46',ico:'📊'},'Berita Acara':{bg:'#FEE2E2',c:'#9B1C1C',ico:'📝'},
+  'Keuangan':{bg:'#DBEAFE',c:'#1E3A8A',ico:'💰'},'Dokumentasi':{bg:'#F3E8FF',c:'#7C3AED',ico:'📸'},
+  'Surat Jalan':{bg:'#ECFDF5',c:'#065F46',ico:'🚗'},'Surat Cuti':{bg:'#FFF7ED',c:'#C2410C',ico:'🏖️'},
+  'Surat SP / Peringatan':{bg:'#FEF3C7',c:'#92400E',ico:'⚠️'},
+};
+function ks(kat){ return katStyle[kat]||{bg:'#F1F5F9',c:'#64748B',ico:'📄'}; }
+
+// Sidebar setup
+document.getElementById('sbAv').textContent  = sesi.nama.split(' ').map(w=>w[0]).join('').substr(0,2).toUpperCase();
+document.getElementById('sbNama').textContent = sesi.nama;
+document.getElementById('sbRole').textContent = sesi.levelAkses==='ADMIN'?'Administrator':sesi.levelAkses==='PENUH'?'Akses Penuh':'Staf';
+if(sesi.levelAkses!=='TOKEN'){document.getElementById('sbAdminSec').style.display='';document.getElementById('sbRahasia').style.display='';document.getElementById('sbLog').style.display='';}
+if(sesi.levelAkses==='ADMIN'){document.getElementById('sbAkun').style.display='';document.getElementById('sbPengaturan').style.display='';}
+
+// Baca URL params
+const up = new URLSearchParams(window.location.search);
+const urlKat = up.get('kat') || '';
+const urlQ   = up.get('q')   || '';
+const urlRahasia = up.get('rahasia') || '';
+
+if(urlKat) {
+  katAktif = urlKat;
+  document.querySelectorAll('.ftag').forEach(el => {
+    el.classList.toggle('on', el.textContent.includes(urlKat) || el.textContent.trim()==='📂 Semua' && !urlKat);
+  });
+  document.getElementById('pageTitle').textContent = urlKat;
+}
+if(urlQ) document.getElementById('inpCari').value = urlQ;
+if(urlRahasia) { katAktif = ''; document.getElementById('pageTitle').textContent = 'Dokumen Rahasia'; }
+
+async function loadKonfig() {
+  const k = await SIARSIP.get({action:'konfig_publik'});
+  if(k.namaInstansi) document.getElementById('sbInstName').textContent = k.namaInstansi;
+  if(k.namaAplikasi) document.getElementById('sbAppName').textContent  = k.namaAplikasi;
+}
+loadKonfig();
+
+async function muat() {
+  const q      = document.getElementById('inpCari').value.trim();
+  const divisi = document.getElementById('selDivisi').value;
+  document.getElementById('resultInfo').textContent = 'Memuat...';
+
+  const hasil = await SIARSIP.post('cariDokumen', {
+    params: { keyword:q, kategori:katAktif, divisi, rahasia:urlRahasia },
+    idAkun: sesi.idAkun
+  });
+
+  if(!hasil.sukses) { document.getElementById('docTable').innerHTML=`<div class="empty"><span class="emo">⚠️</span><p>${hasil.pesan||hasil.error||'Gagal memuat'}</p></div>`; return; }
+
+  allDocs = hasil.dokumen || [];
+  sortDocs();
+}
+
+function sortDocs() {
+  const sort = document.getElementById('selSort').value;
+  const docs = [...allDocs];
+  if(sort==='terlama') docs.sort((a,b)=>a.tanggalInput.localeCompare(b.tanggalInput));
+  else if(sort==='nama') docs.sort((a,b)=>a.perihal.localeCompare(b.perihal));
+  tampilkan(docs);
+}
+
+function tampilkan(docs) {
+  document.getElementById('resultInfo').innerHTML = `Menampilkan <strong>${docs.length}</strong> dokumen`;
+  if(!docs.length) {
+    document.getElementById('docTable').innerHTML = `<div class="empty"><span class="emo">📭</span><p>Tidak ada dokumen ditemukan</p></div>`;
+    return;
+  }
+  document.getElementById('docTable').innerHTML = docs.map(d => {
+    const k = ks(d.kategori);
+    return `<div class="doc-row" onclick="buka('${d.idDokumen}','${d.rahasia}','${d.perihal.replace(/'/g,"\\'")}')">
+      <div class="doc-ico" style="background:${k.bg}">${k.ico}</div>
+      <div class="doc-info">
+        <div class="doc-nm">${d.perihal}</div>
+        <div class="doc-meta">${d.idDokumen} · ${d.divisi} · ${SIARSIP.formatTgl(d.tanggal)} · ${d.lokasiLemari||'—'}</div>
+      </div>
+      <div class="doc-right">
+        <span class="chip" style="background:${k.bg};color:${k.c}">${d.kategori}</span>
+        ${d.rahasia==='YA'?'<span class="rahasia-chip">🔒 Rahasia</span>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pilihKat(el, kat) {
+  katAktif = kat;
+  document.querySelectorAll('.ftag').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  muat();
+}
+
+function debounceSearch() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(muat, 400);
+}
+
+function buka(id, rahasia, perihal) {
+  if(rahasia==='YA' && sesi.levelAkses==='TOKEN') {
+    idRahasiaPending = id;
+    document.getElementById('modalSub').textContent = `"${perihal}" bersifat rahasia. Ajukan permintaan akses ke petugas arsip.`;
+    document.getElementById('modalIzin').classList.add('show');
+    return;
+  }
+  window.location.href = `detail.html?id=${id}`;
+}
+
+function tutupModal() { document.getElementById('modalIzin').classList.remove('show'); }
+
+async function ajukanIzin() {
+  const h = await SIARSIP.post('ajukanIzinRahasia', {idAkun:sesi.idAkun, idDokumen:idRahasiaPending});
+  tutupModal();
+  SIARSIP.toast(h.pesan||(h.sukses?'Permintaan terkirim':'Gagal'), h.sukses?'sukses':'error');
+}
+
+muat();
+</script>
+</body>
+</html>

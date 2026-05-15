@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiARSIP — Detail Dokumen</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#0E7B62;--teal2:#16A884;--navy:#0B1D35;--gold:#C9973A;--red:#DC2626;--light:#EEF2F8;--white:#fff;--border:#E2E8F0;--text1:#0B1D35;--text2:#4A5568;--text3:#94A3B8}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--light);min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.tb-left{display:flex;align-items:center;gap:14px}
+.back-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--light);border:1.5px solid var(--border);border-radius:9px;color:var(--text2);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none}
+.page-ttl{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--navy)}
+.tb-right{display:flex;gap:8px}
+.btn-edit{padding:8px 16px;background:var(--light);border:1.5px solid var(--border);border-radius:9px;color:var(--text2);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.btn-hapus{padding:8px 16px;background:#FEE2E2;border:1.5px solid #FECACA;border-radius:9px;color:var(--red);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.content{max-width:800px;margin:24px auto;padding:0 20px}
+.card{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);margin-bottom:16px}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.card-ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-ttl{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)}
+.card-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.card-body{padding:20px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.info-item label{font-size:10px;font-weight:800;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;display:block;margin-bottom:4px}
+.info-item .val{font-size:13.5px;font-weight:600;color:var(--text1)}
+.info-item .val.muted{color:var(--text3);font-weight:400}
+.chip{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:800}
+.rahasia-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;background:#FEE2E2;color:var(--red);font-size:11.5px;font-weight:800}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.lokasi-box{display:flex;gap:10px}
+.lok-item{flex:1;background:#F4F7FB;border-radius:10px;padding:12px 14px;text-align:center}
+.lok-item .lok-lbl{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.lok-item .lok-val{font-size:14px;font-weight:800;color:var(--navy)}
+.file-preview{border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+.file-preview iframe{width:100%;height:500px;border:none;display:block}
+.no-file{padding:32px;text-align:center;color:var(--text3)}
+.no-file .emo{font-size:36px;display:block;margin-bottom:10px;opacity:.5}
+.barcode-section{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#F8FAFD;border-top:1px solid var(--border)}
+.barcode-left .lbl{font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.barcode-left .code{font-family:monospace;font-size:14px;font-weight:800;color:var(--navy);letter-spacing:2px}
+.btn-copy{padding:7px 14px;background:var(--light);border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--text2)}
+.btn-buka-file{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;border-radius:11px;color:#fff;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none;margin-top:12px}
+.skel{background:linear-gradient(90deg,#F0F4F8 25%,#E2E8F0 50%,#F0F4F8 75%);background-size:200% 100%;animation:skel 1.5s infinite;border-radius:8px}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.show{display:flex}
+.modal{background:var(--white);border-radius:20px;padding:28px;width:100%;max-width:400px}
+.modal-ttl{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.modal-sub{font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;padding:11px;border-radius:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="tb-left">
+    <a class="back-btn" href="javascript:history.back()">← Kembali</a>
+    <div class="page-ttl" id="pageTitle">Detail Dokumen</div>
+  </div>
+  <div class="tb-right" id="tbRight"></div>
+</div>
+
+<div class="content" id="content">
+  <div class="card">
+    <div class="card-body">
+      <div class="skel" style="height:16px;margin-bottom:12px"></div>
+      <div class="skel" style="height:16px;width:70%;margin-bottom:12px"></div>
+      <div class="skel" style="height:16px;width:50%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalHapus">
+  <div class="modal">
+    <div class="modal-ttl">🗑️ Hapus Dokumen?</div>
+    <div class="modal-sub">Dokumen akan dihapus dari sistem. Tindakan ini tidak dapat dibatalkan.</div>
+    <div class="modal-btns">
+      <button style="background:#F1F4F9;color:var(--text2)" onclick="document.getElementById('modalHapus').classList.remove('show')">Batal</button>
+      <button style="background:var(--red);color:#fff" onclick="konfirmasiHapus()">Ya, Hapus</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const sesi = SIARSIP.cekLogin();
+const idDok = new URLSearchParams(window.location.search).get('id');
+if(!idDok) window.location.href = 'arsip.html';
+
+const katStyle = {
+  'Surat Masuk':{bg:'#E0F4EF',c:'#0E7B62',ico:'📥'},'Surat Keluar':{bg:'#DBEAFE',c:'#1E40AF',ico:'📤'},
+  'SK / SPK':{bg:'#EDE9FE',c:'#6D28D9',ico:'📋'},'Kontrak':{bg:'#FEF3C7',c:'#B45309',ico:'📄'},
+  'Laporan':{bg:'#D1FAE5',c:'#065F46',ico:'📊'},'Berita Acara':{bg:'#FEE2E2',c:'#9B1C1C',ico:'📝'},
+  'Keuangan':{bg:'#DBEAFE',c:'#1E3A8A',ico:'💰'},'Surat Jalan':{bg:'#ECFDF5',c:'#065F46',ico:'🚗'},
+  'Surat Cuti':{bg:'#FFF7ED',c:'#C2410C',ico:'🏖️'},'Surat SP / Peringatan':{bg:'#FEF3C7',c:'#92400E',ico:'⚠️'},
+};
+function ks(k){ return katStyle[k]||{bg:'#F1F5F9',c:'#64748B',ico:'📄'}; }
+
+async function load() {
+  const h = await SIARSIP.post('detailDokumen', {idDokumen:idDok, idAkun:sesi.idAkun});
+
+  if(!h.sukses) {
+    document.getElementById('content').innerHTML = `
+      <div class="card"><div class="card-body" style="text-align:center;padding:40px;color:var(--text3)">
+        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+        <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:8px">${h.pesan||'Dokumen tidak ditemukan'}</div>
+        <a href="arsip.html" style="color:var(--teal);font-size:13px">← Kembali ke daftar arsip</a>
+      </div></div>`;
+    return;
+  }
+
+  const d  = h;
+  const k  = ks(d.kategori);
+  document.getElementById('pageTitle').textContent = d.perihal;
+
+  // Tombol aksi untuk admin
+  if(sesi.levelAkses==='ADMIN') {
+    document.getElementById('tbRight').innerHTML = `
+      <button class="btn-edit" onclick="SIARSIP.toast('Fitur edit segera hadir','warn')">✏️ Edit</button>
+      <button class="btn-hapus" onclick="document.getElementById('modalHapus').classList.add('show')">🗑️ Hapus</button>`;
+  }
+
+  document.getElementById('content').innerHTML = `
+    <!-- Info Utama -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico" style="background:${k.bg}">${k.ico}</div>
+        <div>
+          <div class="card-ttl">${d.perihal}</div>
+          <div class="card-sub">${d.idDokumen} · Diinput oleh ${d.penginput} · ${SIARSIP.formatWaktu(d.tanggalInput)}</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item"><label>Nomor Surat</label><div class="val">${d.nomorSurat||'—'}</div></div>
+          <div class="info-item"><label>Tanggal Dokumen</label><div class="val">${SIARSIP.formatTgl(d.tanggal)}</div></div>
+          <div class="info-item"><label>Kategori</label><div class="val"><span class="chip" style="background:${k.bg};color:${k.c}">${d.kategori}</span></div></div>
+          <div class="info-item"><label>Divisi</label><div class="val">${d.divisi||'—'}</div></div>
+          <div class="info-item"><label>Asal / Tujuan</label><div class="val">${d.asalTujuan||'—'}</div></div>
+          <div class="info-item"><label>Status</label><div class="val">${d.rahasia==='YA'?'<span class="rahasia-chip">🔒 Dokumen Rahasia</span>':'<span class="chip" style="background:#D1FAE5;color:#065F46">✅ Dokumen Biasa</span>'}</div></div>
+        </div>
+        ${d.catatan?`<div class="divider"></div><div class="info-item"><label>Catatan</label><div class="val">${d.catatan}</div></div>`:''}
+      </div>
+    </div>
+
+    <!-- Lokasi Fisik -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico" style="background:#FEF3C7">📍</div>
+        <div><div class="card-ttl">Lokasi Fisik Dokumen</div><div class="card-sub">Posisi dokumen asli di lemari arsip</div></div>
+      </div>
+      <div class="card-body">
+        <div class="lokasi-box">
+          <div class="lok-item"><div class="lok-lbl">Lemari / Rak</div><div class="lok-val">${d.lokasiLemari||'—'}</div></div>
+          <div class="lok-item"><div class="lok-lbl">Map / Folder</div><div class="lok-val">${d.lokasiMap||'—'}</div></div>
+          <div class="lok-item"><div class="lok-lbl">Laci / Posisi</div><div class="lok-val">${d.lokasiLaci||'—'}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- File -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico" style="background:#EDE9FE">📎</div>
+        <div><div class="card-ttl">File Dokumen</div><div class="card-sub">Foto atau scan dokumen yang diarsipkan</div></div>
+      </div>
+      ${d.linkFile
+        ? `<div class="card-body">
+            <div class="file-preview"><iframe src="${d.linkFile}" title="Dokumen"></iframe></div>
+            <a class="btn-buka-file" href="${d.linkFile}" target="_blank">🔗 &nbsp;Buka File di Google Drive</a>
+           </div>`
+        : `<div class="no-file"><span class="emo">📭</span><p>Belum ada file yang diunggah untuk dokumen ini</p></div>`
+      }
+
+      <!-- Barcode -->
+      <div class="barcode-section">
+        <div class="barcode-left">
+          <div class="lbl">Kode Barcode Keaslian</div>
+          <div class="code">${d.barcodeId||'—'}</div>
+        </div>
+        <button class="btn-copy" onclick="salinBarcode('${d.barcodeId}')">📋 Salin</button>
+      </div>
+    </div>`;
+}
+
+function salinBarcode(kode) {
+  navigator.clipboard.writeText(kode).then(() => SIARSIP.toast('Barcode disalin!','sukses'));
+}
+
+async function konfirmasiHapus() {
+  const h = await SIARSIP.post('hapusDokumen', {idDokumen:idDok, idAkun:sesi.idAkun});
+  document.getElementById('modalHapus').classList.remove('show');
+  if(h.sukses) { SIARSIP.toast('Dokumen berhasil dihapus','sukses'); setTimeout(()=>window.location.href='arsip.html',1500); }
+  else SIARSIP.toast('Gagal: '+(h.pesan||h.error),'error');
+}
+
+load();
+</script>
+</body>
+</html>
