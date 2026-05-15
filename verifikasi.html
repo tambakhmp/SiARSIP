@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiARSIP — Verifikasi Dokumen</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(145deg,#071525 0%,#0D2545 60%,#071E38 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;position:relative;overflow:hidden}
+body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.018) 1px,transparent 1px);background-size:30px 30px}
+.glow1{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(14,123,98,.12) 0%,transparent 65%);top:-150px;right:-150px;pointer-events:none}
+.glow2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(201,151,58,.07) 0%,transparent 65%);bottom:-100px;left:-100px;pointer-events:none}
+.wrap{width:100%;max-width:460px;position:relative;z-index:1}
+.brand{text-align:center;margin-bottom:24px}
+.brand-logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0E7B62,#16A884);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;box-shadow:0 8px 24px rgba(14,123,98,.4)}
+.brand-name{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:1.5px}
+.brand-sub{font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.card{background:rgba(255,255,255,.04);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.09);border-radius:24px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.card-head{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center}
+.card-ttl{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:4px}
+.card-sub{font-size:11.5px;color:rgba(255,255,255,.38)}
+.card-body{padding:24px}
+/* Input barcode */
+.input-wrap{position:relative;margin-bottom:14px}
+.input-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.35}
+.barcode-input{width:100%;padding:13px 14px 13px 44px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;font-family:'Plus Jakarta Sans',monospace;font-size:14px;outline:none;letter-spacing:1px;transition:border-color .2s}
+.barcode-input:focus{border-color:rgba(52,211,153,.5)}
+.barcode-input::placeholder{color:rgba(255,255,255,.22);letter-spacing:0}
+.btn-verif{width:100%;padding:13px;background:linear-gradient(135deg,#0E7B62,#16A884);border:none;border-radius:12px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(14,123,98,.35);display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;transition:transform .15s}
+.btn-verif:hover{transform:translateY(-1px)}
+.btn-verif:disabled{opacity:.6;cursor:not-allowed;transform:none}
+/* Result */
+.result{border-radius:14px;padding:18px;margin-top:8px;display:none}
+.result.show{display:block}
+.result.asli{background:rgba(14,123,98,.12);border:1.5px solid rgba(14,123,98,.35)}
+.result.palsu{background:rgba(220,38,38,.1);border:1.5px solid rgba(220,38,38,.3)}
+.result-status{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.result-icon{font-size:28px}
+.result-label{font-family:'Sora',sans-serif;font-size:16px;font-weight:700}
+.result.asli .result-label{color:#34D399}
+.result.palsu .result-label{color:#FCA5A5}
+.result-table{display:grid;grid-template-columns:1fr 1.5fr;gap:6px 12px}
+.rt-key{font-size:10.5px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center}
+.rt-val{font-size:12.5px;color:rgba(255,255,255,.85);font-weight:600}
+.divider-line{height:1px;background:rgba(255,255,255,.08);margin:14px 0;grid-column:1/-1}
+.btn-buka{width:100%;padding:12px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:11px;color:rgba(255,255,255,.8);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:14px;text-align:center;text-decoration:none;display:block;transition:all .15s}
+.btn-buka:hover{background:rgba(255,255,255,.12)}
+.rahasia-note{font-size:11px;color:rgba(255,165,0,.7);margin-top:10px;text-align:center;line-height:1.5}
+/* Separator */
+.or{display:flex;align-items:center;gap:10px;margin:16px 0}
+.or::before,.or::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+.or span{font-size:10.5px;color:rgba(255,255,255,.25);white-space:nowrap}
+/* QR scan hint */
+.scan-hint{background:rgba(201,151,58,.08);border:1px solid rgba(201,151,58,.18);border-radius:12px;padding:12px 14px;font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.7}
+.loading{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.login-link{text-align:center;margin-top:16px}
+.login-link a{font-size:12px;color:rgba(52,211,153,.7);text-decoration:none;font-weight:600}
+.login-link a:hover{color:#34D399}
+</style>
+</head>
+<body>
+<div class="glow1"></div><div class="glow2"></div>
+
+<div class="wrap">
+  <div class="brand">
+    <div class="brand-logo">🗃️</div>
+    <div class="brand-name" id="brandName">SiARSIP</div>
+    <div class="brand-sub" id="brandInst">Sistem Arsip Digital</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-ttl">🔍 Verifikasi Keaslian Dokumen</div>
+      <div class="card-sub">Masukkan kode barcode yang tertera pada dokumen</div>
+    </div>
+    <div class="card-body">
+      <div class="input-wrap">
+        <span class="input-ico">📋</span>
+        <input class="barcode-input" id="inpBarcode" placeholder="Contoh: BAR-A1B2C3D4E5F6" maxlength="20">
+      </div>
+      <button class="btn-verif" id="btnVerif" onclick="verifikasi()">
+        <span id="btnTeks">🔍 Verifikasi Sekarang</span>
+        <div class="loading" id="spinner"></div>
+      </button>
+
+      <!-- Hasil verifikasi -->
+      <div class="result" id="result">
+        <div class="result-status">
+          <span class="result-icon" id="resIcon">✅</span>
+          <span class="result-label" id="resLabel">—</span>
+        </div>
+        <div class="result-table" id="resTable"></div>
+        <a class="btn-buka" id="resBuka" href="#" style="display:none">🔐 Lihat Dokumen Lengkap (Perlu Login)</a>
+        <div class="rahasia-note" id="resRahasiaNote" style="display:none">
+          ⚠️ Dokumen ini bersifat rahasia. Diperlukan login dan izin khusus dari petugas arsip untuk melihat isinya.
+        </div>
+      </div>
+
+      <div class="or"><span>atau scan QR code dari dokumen</span></div>
+      <div class="scan-hint">
+        📱 &nbsp;Gunakan aplikasi kamera HP Anda untuk memindai QR code yang tertera pada dokumen fisik. Hasil verifikasi akan muncul otomatis di halaman ini.
+      </div>
+    </div>
+  </div>
+
+  <div class="login-link"><a href="index.html">← Masuk ke Sistem Arsip</a></div>
+</div>
+
+<script src="config.js"></script>
+<script>
+// Load konfigurasi instansi
+async function loadKonfig() {
+  const k = await SIARSIP.get({ action:'konfig_publik' });
+  if (k.namaInstansi) { document.getElementById('brandInst').textContent = k.namaInstansi; }
+  if (k.namaAplikasi) { document.getElementById('brandName').textContent = k.namaAplikasi; }
+}
+loadKonfig();
+
+// Cek barcode dari URL (untuk QR code langsung)
+const urlParams = new URLSearchParams(window.location.search);
+const barcodeUrl = urlParams.get('barcode');
+if (barcodeUrl) {
+  document.getElementById('inpBarcode').value = barcodeUrl;
+  verifikasi();
+}
+
+async function verifikasi() {
+  const barcode = document.getElementById('inpBarcode').value.trim().toUpperCase();
+  if (!barcode) { SIARSIP.toast('Masukkan kode barcode terlebih dahulu', 'error'); return; }
+
+  const btn    = document.getElementById('btnVerif');
+  const spinner= document.getElementById('spinner');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  document.getElementById('btnTeks').textContent = 'Memverifikasi...';
+
+  const hasil = await SIARSIP.get({ action:'verifikasi', barcode });
+
+  btn.disabled = false;
+  spinner.style.display = 'none';
+  document.getElementById('btnTeks').textContent = '🔍 Verifikasi Sekarang';
+
+  const resEl = document.getElementById('result');
+  resEl.classList.add('show');
+
+  if (hasil.ditemukan) {
+    resEl.className    = 'result show asli';
+    document.getElementById('resIcon').textContent  = '✅';
+    document.getElementById('resLabel').textContent = hasil.status;
+
+    document.getElementById('resTable').innerHTML = `
+      <span class="rt-key">Nomor Surat</span><span class="rt-val">${hasil.nomorSurat || '—'}</span>
+      <span class="rt-key">Tanggal</span><span class="rt-val">${SIARSIP.formatTgl(hasil.tanggal)}</span>
+      <div class="divider-line"></div>
+      <span class="rt-key">Perihal</span><span class="rt-val">${hasil.perihal || '—'}</span>
+      <span class="rt-key">Kategori</span><span class="rt-val">${hasil.kategori || '—'}</span>
+      <div class="divider-line"></div>
+      <span class="rt-key">Instansi</span><span class="rt-val">${hasil.instansi || '—'}</span>
+      <span class="rt-key">Terdaftar</span><span class="rt-val">${SIARSIP.formatWaktu(hasil.tanggalInput)}</span>
+    `;
+
+    // Tombol lihat dokumen
+    const btnBuka = document.getElementById('resBuka');
+    if (hasil.rahasia) {
+      btnBuka.style.display = 'none';
+      document.getElementById('resRahasiaNote').style.display = 'block';
+    } else {
+      btnBuka.style.display = 'block';
+      btnBuka.href = `index.html?redirect=detail&id=${hasil.idDokumen}`;
+      document.getElementById('resRahasiaNote').style.display = 'none';
+    }
+
+  } else {
+    resEl.className    = 'result show palsu';
+    document.getElementById('resIcon').textContent  = '❌';
+    document.getElementById('resLabel').textContent = hasil.status;
+    document.getElementById('resTable').innerHTML = `
+      <span class="rt-key" style="grid-column:1/-1;color:rgba(255,255,255,.5);font-size:12px;text-transform:none;letter-spacing:0">
+        Kode barcode tidak ditemukan dalam sistem. Dokumen ini mungkin tidak resmi atau belum terdaftar.
+      </span>
+    `;
+    document.getElementById('resBuka').style.display = 'none';
+    document.getElementById('resRahasiaNote').style.display = 'none';
+  }
+}
+
+document.getElementById('inpBarcode').addEventListener('keydown', e => {
+  if (e.key === 'Enter') verifikasi();
+});
+</script>
+</body>
+</html>
