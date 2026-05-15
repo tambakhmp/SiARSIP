@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiARSIP — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#0E7B62;--teal2:#16A884;--navy:#0B1D35;--gold:#C9973A}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(145deg,#071525 0%,#0D2545 60%,#071E38 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;position:relative;overflow:hidden}
+body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.018) 1px,transparent 1px);background-size:30px 30px;pointer-events:none}
+.glow1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(14,123,98,.13) 0%,transparent 65%);top:-200px;right:-200px;pointer-events:none}
+.glow2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(201,151,58,.07) 0%,transparent 65%);bottom:-100px;left:-100px;pointer-events:none}
+.wrap{width:100%;max-width:420px;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(14,123,98,.15);border:1px solid rgba(14,123,98,.3);border-radius:100px;padding:5px 14px;font-size:10.5px;color:#34D399;font-weight:700;letter-spacing:.4px;margin-bottom:20px}
+.card{background:rgba(255,255,255,.04);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.09);border-radius:24px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.card-top{background:linear-gradient(135deg,rgba(14,123,98,.25),rgba(14,123,98,.08));border-bottom:1px solid rgba(255,255,255,.06);padding:30px 28px 24px;text-align:center}
+.logo{width:68px;height:68px;border-radius:18px;background:linear-gradient(135deg,var(--teal),var(--teal2));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:32px;box-shadow:0 10px 32px rgba(14,123,98,.45)}
+.app-name{font-family:'Sora',sans-serif;font-size:30px;font-weight:800;color:#fff;letter-spacing:2px;margin-bottom:4px}
+.inst-name{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;min-height:16px}
+.card-body{padding:28px}
+.label{display:block;font-size:10px;font-weight:800;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+.input-wrap{position:relative;margin-bottom:16px}
+.input-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.35;pointer-events:none}
+.input-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.4;cursor:pointer;background:none;border:none;color:#fff;padding:0}
+.input-eye:hover{opacity:.8}
+input{width:100%;padding:12px 42px 12px 44px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+input:focus{border-color:rgba(52,211,153,.5);background:rgba(255,255,255,.09)}
+input::placeholder{color:rgba(255,255,255,.22)}
+input.error{border-color:rgba(220,38,38,.6)}
+.percobaan{font-size:11px;margin-bottom:14px;padding:8px 12px;border-radius:8px;display:none}
+.percobaan.warn{background:rgba(201,151,58,.12);border:1px solid rgba(201,151,58,.25);color:#FBBF24;display:block}
+.percobaan.err{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.25);color:#FCA5A5;display:block}
+.terkunci{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);border-radius:12px;padding:14px;text-align:center;font-size:12px;color:#FCA5A5;margin-bottom:16px;display:none}
+.terkunci.show{display:block}
+.btn-login{width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;border-radius:12px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-shadow:0 6px 24px rgba(14,123,98,.4);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-login:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 32px rgba(14,123,98,.5)}
+.btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.loading{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.foot{text-align:center;margin-top:14px;font-size:10.5px;color:rgba(255,255,255,.2)}
+</style>
+</head>
+<body>
+<div class="glow1"></div>
+<div class="glow2"></div>
+<div class="wrap">
+  <div style="text-align:center;margin-bottom:20px">
+    <span class="badge">🔒 SISTEM TERENKRIPSI — AKSES TERBATAS</span>
+  </div>
+  <div class="card">
+    <div class="card-top">
+      <div class="logo">🗃️</div>
+      <div class="app-name" id="appName">SiARSIP</div>
+      <div class="inst-name" id="instName">Memuat...</div>
+    </div>
+    <div class="card-body">
+      <div class="terkunci" id="boxTerkunci">
+        🔒 <strong>Akun terkunci.</strong><br>
+        <span id="pesanKunci"></span>
+      </div>
+      <label class="label">ID Pengguna</label>
+      <div class="input-wrap">
+        <span class="input-ico">👤</span>
+        <input id="inpUser" type="text" placeholder="Masukkan username..." autocomplete="username">
+      </div>
+      <label class="label">Kata Sandi</label>
+      <div class="input-wrap">
+        <span class="input-ico">🔑</span>
+        <input id="inpPass" type="password" placeholder="Masukkan kata sandi..." autocomplete="current-password">
+        <button class="input-eye" id="btnEye" onclick="togglePass()" title="Tampilkan/sembunyikan password">👁️</button>
+      </div>
+      <div class="percobaan" id="boxPercobaan"></div>
+      <button class="btn-login" id="btnLogin" onclick="doLogin()">
+        <span id="btnTeks">Masuk ke Sistem →</span>
+        <div class="loading" id="spinner"></div>
+      </button>
+      <p class="foot">🛡️ Verifikasi berlapis aktif · Semua aktivitas tercatat</p>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+// Load konfigurasi instansi
+async function loadKonfig() {
+  const hasil = await SIARSIP.get({ action: 'konfig_publik' });
+  if (hasil.namaInstansi) document.getElementById('instName').textContent = hasil.namaInstansi;
+  else document.getElementById('instName').textContent = 'Sistem Arsip Digital';
+  if (hasil.namaAplikasi) document.getElementById('appName').textContent = hasil.namaAplikasi;
+  if (hasil.backgroundUrl) document.body.style.background = `url('${hasil.backgroundUrl}') center/cover`;
+}
+loadKonfig();
+
+// Toggle show/hide password
+let passVisible = false;
+function togglePass() {
+  passVisible = !passVisible;
+  document.getElementById('inpPass').type = passVisible ? 'text' : 'password';
+  document.getElementById('btnEye').textContent = passVisible ? '🙈' : '👁️';
+}
+
+// Login
+async function doLogin() {
+  const username = document.getElementById('inpUser').value.trim();
+  const password = document.getElementById('inpPass').value;
+  const btn      = document.getElementById('btnLogin');
+  const spinner  = document.getElementById('spinner');
+  const btnTeks  = document.getElementById('btnTeks');
+
+  if (!username || !password) {
+    SIARSIP.toast('Username dan password wajib diisi', 'error');
+    return;
+  }
+
+  // Loading state
+  btn.disabled  = true;
+  spinner.style.display = 'block';
+  btnTeks.textContent   = 'Memverifikasi...';
+
+  const hasil = await SIARSIP.post('login', { username, password });
+
+  btn.disabled  = false;
+  spinner.style.display = 'none';
+  btnTeks.textContent   = 'Masuk ke Sistem →';
+
+  if (hasil.error) {
+    SIARSIP.toast('Koneksi gagal: ' + hasil.error, 'error');
+    return;
+  }
+
+  if (hasil.terkunci) {
+    document.getElementById('boxTerkunci').classList.add('show');
+    document.getElementById('pesanKunci').textContent = hasil.pesan;
+    document.getElementById('boxPercobaan').className = 'percobaan';
+    return;
+  }
+
+  if (!hasil.sukses) {
+    // Tampilkan sisa percobaan
+    const box = document.getElementById('boxPercobaan');
+    box.textContent = '⚠️ ' + hasil.pesan;
+    box.className   = hasil.sisa === 1 ? 'percobaan err' : 'percobaan warn';
+    document.getElementById('inpPass').classList.add('error');
+    document.getElementById('inpPass').value = '';
+    return;
+  }
+
+  // Reset error state
+  document.getElementById('boxPercobaan').className = 'percobaan';
+  document.getElementById('inpPass').classList.remove('error');
+  document.getElementById('boxTerkunci').classList.remove('show');
+
+  // Simpan data sesi sementara (belum full login, masih perlu foto + token)
+  SIARSIP.simpanSesi(hasil);
+  SIARSIP.setStep('foto');
+
+  window.location.href = 'foto.html';
+}
+
+// Enter key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// Cek jika sudah ada sesi aktif
+const sesi = SIARSIP.getSesi();
+const step  = SIARSIP.getStep();
+if (sesi) {
+  if (step === 'foto')     window.location.href = 'foto.html';
+  else if (step === 'token') window.location.href = 'token.html';
+  else if (step === 'masuk') window.location.href = 'dashboard.html';
+}
+</script>
+</body>
+</html>

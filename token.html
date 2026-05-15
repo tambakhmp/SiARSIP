@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiARSIP — Token Harian</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(145deg,#071525,#0D2545);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.wrap{width:100%;max-width:400px}
+.step-row{display:flex;align-items:center;justify-content:center;margin-bottom:28px}
+.step{display:flex;flex-direction:column;align-items:center;gap:5px}
+.dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.dot.done{background:#0E7B62;color:#fff}
+.dot.curr{background:linear-gradient(135deg,#5B21B6,#7C3AED);color:#fff;box-shadow:0 4px 12px rgba(109,40,217,.4)}
+.dot.idle{background:rgba(255,255,255,.08);color:rgba(255,255,255,.3)}
+.step-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.step-lbl.done{color:#34D399}.step-lbl.curr{color:#A78BFA}.step-lbl.idle{color:rgba(255,255,255,.2)}
+.step-line{width:36px;height:1.5px;margin-bottom:18px}
+.step-line.done{background:#0E7B62}.step-line.idle{background:rgba(255,255,255,.1)}
+.card{background:rgba(255,255,255,.04);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.09);border-radius:24px;padding:32px 28px;text-align:center;box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.ico{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#3B1FAB,#6D28D9);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;box-shadow:0 8px 28px rgba(109,40,217,.4)}
+.ttl{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:6px}
+.sub{font-size:12px;color:rgba(255,255,255,.38);margin-bottom:8px}
+.jam-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);border-radius:100px;padding:5px 14px;font-size:11px;color:#34D399;font-weight:700;margin-bottom:24px}
+.diluar{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.25);border-radius:14px;padding:20px;margin-bottom:16px;display:none}
+.diluar.show{display:block}
+.diluar p{font-size:12.5px;color:#FCA5A5;line-height:1.6}
+/* Token inputs */
+.token-boxes{display:flex;gap:8px;justify-content:center;margin-bottom:18px}
+.tbox{width:46px;height:56px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);border-radius:13px;color:#fff;font-size:24px;font-weight:800;text-align:center;font-family:'Sora',monospace;outline:none;transition:all .2s;-webkit-appearance:none}
+.tbox:focus{background:rgba(109,40,217,.2);border-color:rgba(167,139,250,.55)}
+.tbox.filled{background:rgba(109,40,217,.15);border-color:rgba(167,139,250,.4)}
+.tbox.error{background:rgba(220,38,38,.15);border-color:rgba(220,38,38,.5)}
+.info{background:rgba(201,151,58,.08);border:1px solid rgba(201,151,58,.18);border-radius:12px;padding:12px 14px;font-size:11.5px;color:rgba(255,255,255,.45);text-align:left;line-height:1.7;margin-bottom:18px}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.btn-purple{background:linear-gradient(135deg,#5B21B6,#7C3AED);color:#fff;box-shadow:0 6px 24px rgba(109,40,217,.4)}
+.btn-purple:hover:not(:disabled){transform:translateY(-1px)}
+.btn-purple:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.note{font-size:10.5px;color:rgba(255,255,255,.2);margin-top:12px}
+.loading{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err-msg{font-size:11.5px;color:#FCA5A5;margin-bottom:12px;min-height:16px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="step-row">
+    <div class="step"><div class="dot done">✓</div><span class="step-lbl done">Login</span></div>
+    <div class="step-line done"></div>
+    <div class="step"><div class="dot done">✓</div><span class="step-lbl done">Wajah</span></div>
+    <div class="step-line done"></div>
+    <div class="step"><div class="dot curr">3</div><span class="step-lbl curr">Token</span></div>
+    <div class="step-line idle"></div>
+    <div class="step"><div class="dot idle">4</div><span class="step-lbl idle">Masuk</span></div>
+  </div>
+
+  <div class="card">
+    <div class="ico">🔑</div>
+    <div class="ttl">Token Harian</div>
+    <div class="sub">Masukkan kode 6 digit unik untuk akun Anda hari ini</div>
+    <div class="jam-badge">🕐 Aktif 07.00–19.00 WIT &nbsp;·&nbsp; Sisa: <span id="timer">--:--:--</span></div>
+
+    <!-- Pesan di luar jam kerja -->
+    <div class="diluar" id="boxDiluar">
+      <p>🚫 <strong>Di luar jam kerja</strong><br>Sistem hanya dapat diakses pada jam 07.00 – 19.00 WIT.<br>Silakan coba kembali besok pagi.</p>
+    </div>
+
+    <!-- Input token -->
+    <div class="token-boxes" id="tokenBoxes">
+      <input class="tbox" maxlength="1" type="number" min="0" max="9" id="t0">
+      <input class="tbox" maxlength="1" type="number" min="0" max="9" id="t1">
+      <input class="tbox" maxlength="1" type="number" min="0" max="9" id="t2">
+      <input class="tbox" maxlength="1" type="number" min="0" max="9" id="t3">
+      <input class="tbox" maxlength="1" type="number" min="0" max="9" id="t4">
+      <input class="tbox" maxlength="1" type="number" min="0" max="9" id="t5">
+    </div>
+
+    <div class="err-msg" id="errMsg"></div>
+
+    <div class="info">🛡️ Token unik per akun, berubah otomatis setiap hari pukul 00.00. <strong style="color:rgba(255,255,255,.6)">Jangan bagikan ke siapapun.</strong></div>
+
+    <button class="btn btn-purple" id="btnVerif" onclick="verifikasiToken()">
+      <span id="btnTeks">Verifikasi & Masuk ke Arsip →</span>
+      <div class="loading" id="spinner"></div>
+    </button>
+    <div class="note" id="noteToken">Token berlaku hingga 19.00 WIT hari ini</div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const sesi = SIARSIP.getSesi();
+if (!sesi) window.location.href = 'index.html';
+
+// Timer countdown
+function updateTimer() {
+  const now     = new Date();
+  const selesai = new Date();
+  selesai.setHours(19, 0, 0, 0);
+  if (now > selesai) {
+    document.getElementById('timer').textContent = '00:00:00';
+    document.getElementById('boxDiluar').classList.add('show');
+    document.getElementById('btnVerif').disabled = true;
+    return;
+  }
+  const diff = selesai - now;
+  const h    = String(Math.floor(diff / 3600000)).padStart(2, '0');
+  const m    = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+  const s    = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+  document.getElementById('timer').textContent = `${h}:${m}:${s}`;
+
+  // Cek jam mulai
+  const jamMulai = new Date(); jamMulai.setHours(7, 0, 0, 0);
+  if (now < jamMulai) {
+    document.getElementById('boxDiluar').classList.add('show');
+    document.getElementById('btnVerif').disabled = true;
+  }
+}
+setInterval(updateTimer, 1000);
+updateTimer();
+
+// Auto-advance antar kotak input
+document.querySelectorAll('.tbox').forEach((el, i, all) => {
+  el.addEventListener('input', () => {
+    const val = el.value.replace(/[^0-9]/g, '');
+    el.value  = val ? val[val.length - 1] : '';
+    el.classList.toggle('filled', !!el.value);
+    if (el.value && i < 5) all[i + 1].focus();
+  });
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Backspace' && !el.value && i > 0) all[i - 1].focus();
+    if (e.key === 'Enter') verifikasiToken();
+  });
+});
+
+// Verifikasi token
+async function verifikasiToken() {
+  const token = Array.from({ length: 6 }, (_, i) =>
+    document.getElementById('t' + i).value).join('');
+
+  if (token.length < 6) {
+    document.getElementById('errMsg').textContent = '⚠️ Masukkan 6 digit token lengkap';
+    return;
+  }
+
+  const btn     = document.getElementById('btnVerif');
+  const spinner = document.getElementById('spinner');
+  btn.disabled  = true;
+  spinner.style.display = 'block';
+  document.getElementById('btnTeks').textContent = 'Memverifikasi...';
+  document.getElementById('errMsg').textContent  = '';
+
+  const hasil = await SIARSIP.post('validasiToken', {
+    idAkun: sesi.idAkun,
+    token,
+  });
+
+  btn.disabled  = false;
+  spinner.style.display = 'none';
+  document.getElementById('btnTeks').textContent = 'Verifikasi & Masuk ke Arsip →';
+
+  if (hasil.error || !hasil.sukses) {
+    document.querySelectorAll('.tbox').forEach(el => el.classList.add('error'));
+    document.getElementById('errMsg').textContent = '❌ ' + (hasil.pesan || 'Token tidak valid');
+    setTimeout(() => {
+      document.querySelectorAll('.tbox').forEach(el => {
+        el.classList.remove('error');
+        el.value = '';
+      });
+      document.getElementById('t0').focus();
+    }, 1500);
+    return;
+  }
+
+  SIARSIP.setStep('masuk');
+  window.location.href = 'dashboard.html';
+}
+</script>
+</body>
+</html>
