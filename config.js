@@ -4,7 +4,7 @@
 // ============================================================
 
 const SIARSIP = {
-  API_URL: 'https://script.google.com/macros/s/AKfycbzsFjf8H9OX2DOYzGwhWZ1_nEE-undVu-4BnPSTQS2XXuklzvklacd4nbhH9d66-oq1MQ/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycbwn3fEZp7C4LfJ89wqpfVF6gWA0DgxMbEpQLuZsjYQ2k4LU5D527vewQxEkl-mmZDulIQ/exec',
 
   // POST ke GAS — pakai text/plain agar tidak kena CORS preflight
   async post(action, data = {}) {
