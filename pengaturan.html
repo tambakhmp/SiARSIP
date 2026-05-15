@@ -48,7 +48,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--light);display:
 .pass-wrap input{padding-right:42px}
 .pass-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;opacity:.4}
 .pass-eye:hover{opacity:.8}
-.danger-zone{background:#FFF5F5;border:1.5px solid #FCA5A5;border-radius:14px;padding:18px;margin-top:16px;max-width:900px}
+.upload-img-wrap{border:2px dashed var(--border);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:#FAFBFD;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.upload-img-wrap:hover,.upload-img-wrap.has-img{border-color:var(--teal);background:#F0FAF7}
+.upload-img-wrap.wide{width:100%}
+.upload-img-lbl{font-size:12.5px;font-weight:700;color:var(--teal);margin-top:4px}
+.upload-img-sub{font-size:10.5px;color:var(--text3)}
+.img-loaded{display:flex;align-items:center;gap:10px;width:100%}
+.img-loaded .change-lbl{font-size:11.5px;color:var(--teal);font-weight:600}
+
 .danger-ttl{font-size:12px;font-weight:800;color:var(--red);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
 .btn-danger{padding:9px 18px;background:var(--red);border:none;border-radius:9px;color:#fff;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
 </style>
@@ -87,8 +94,26 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--light);display:
           <div class="info-box">ℹ️ Nama dan logo instansi akan tampil di halaman login dan seluruh sistem.</div>
           <div class="fg"><label>Nama Instansi</label><input id="namaInstansi" placeholder="PT. Hutakalo Minatani Prima"></div>
           <div class="fg"><label>Nama Aplikasi</label><input id="namaAplikasi" placeholder="SiARSIP"></div>
-          <div class="fg"><label>URL Logo (link gambar)</label><input id="logoUrl" placeholder="https://..."></div>
-          <div class="fg"><label>URL Background Login</label><input id="backgroundUrl" placeholder="https://..."></div>
+          <div class="fg">
+            <label>Logo Instansi</label>
+            <div class="upload-img-wrap" id="logoWrap" onclick="document.getElementById('logoFile').click()">
+              <img id="logoPreview" src="" alt="Logo" style="display:none;width:64px;height:64px;border-radius:10px;object-fit:cover">
+              <div id="logoPlaceholder"><span style="font-size:28px">🏛️</span><div class="upload-img-lbl">Klik untuk upload logo</div><div class="upload-img-sub">JPG, PNG · Maks 2MB</div></div>
+            </div>
+            <input type="file" id="logoFile" accept="image/*" style="display:none" onchange="previewImg('logoFile','logoPreview','logoPlaceholder','logoB64')">
+            <input type="hidden" id="logoB64">
+            <input type="hidden" id="logoUrl">
+          </div>
+          <div class="fg">
+            <label>Background Halaman Login</label>
+            <div class="upload-img-wrap wide" id="bgWrap" onclick="document.getElementById('bgFile').click()">
+              <img id="bgPreview" src="" alt="Background" style="display:none;width:100%;height:80px;object-fit:cover;border-radius:8px">
+              <div id="bgPlaceholder"><span style="font-size:28px">🖼️</span><div class="upload-img-lbl">Klik untuk upload background</div><div class="upload-img-sub">JPG, PNG · Maks 5MB · Landscape disarankan</div></div>
+            </div>
+            <input type="file" id="bgFile" accept="image/*" style="display:none" onchange="previewImg('bgFile','bgPreview','bgPlaceholder','bgB64')">
+            <input type="hidden" id="bgB64">
+            <input type="hidden" id="backgroundUrl">
+          </div>
           <div class="fg"><label>Warna Tema</label><input id="warnaTema" type="color" value="#0E7B62"></div>
           <button class="btn-save" onclick="simpanInstansi()">
             <span id="teks1">💾 Simpan Identitas</span><div class="loading" id="spin1"></div>
@@ -223,20 +248,76 @@ async function loadPengaturan() {
 }
 loadPengaturan();
 
+// Preview gambar sebelum upload
+function previewImg(inputId, previewId, placeholderId, b64Id) {
+  const file = document.getElementById(inputId).files[0];
+  if (!file) return;
+  const maxMB = inputId === 'bgFile' ? 5 : 2;
+  if (file.size > maxMB * 1024 * 1024) { SIARSIP.toast(`File terlalu besar (maks ${maxMB}MB)`, 'error'); return; }
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const b64 = ev.target.result;
+    document.getElementById(b64Id).value = b64;
+
+    const prev = document.getElementById(previewId);
+    prev.src = b64;
+    prev.style.display = 'block';
+    document.getElementById(placeholderId).style.display = 'none';
+
+    const wrap = document.getElementById(inputId === 'logoFile' ? 'logoWrap' : 'bgWrap');
+    wrap.classList.add('has-img');
+  };
+  reader.readAsDataURL(file);
+}
+
+// Upload gambar ke Google Drive, dapatkan URL publik
+async function uploadGambar(b64, namaFile, mimeType) {
+  if (!b64) return '';
+  const hasil = await SIARSIP.post('uploadGambarPengaturan', {
+    file    : b64.split(',')[1],
+    namaFile,
+    mimeType,
+    idAkun  : sesi.idAkun,
+  });
+  return hasil.url || '';
+}
+
 async function simpanInstansi() {
-  setBtnLoading('teks1','spin1',true,'💾 Menyimpan...');
+  setBtnLoading('teks1','spin1',true,'⏳ Mengupload gambar...');
+
+  // Upload logo jika ada file baru
+  let logoUrl      = document.getElementById('logoUrl').value;
+  let backgroundUrl= document.getElementById('backgroundUrl').value;
+
+  const logoB64 = document.getElementById('logoB64').value;
+  const bgB64   = document.getElementById('bgB64').value;
+  const logoFile= document.getElementById('logoFile').files[0];
+  const bgFile  = document.getElementById('bgFile').files[0];
+
+  if (logoB64 && logoFile) {
+    document.getElementById('teks1').textContent = '⏳ Upload logo...';
+    logoUrl = await uploadGambar(logoB64, logoFile.name, logoFile.type);
+  }
+  if (bgB64 && bgFile) {
+    document.getElementById('teks1').textContent = '⏳ Upload background...';
+    backgroundUrl = await uploadGambar(bgB64, bgFile.name, bgFile.type);
+  }
+
+  document.getElementById('teks1').textContent = '💾 Menyimpan...';
+
   const hasil = await SIARSIP.post('simpanPengaturan', {
     data: {
-      namaInstansi : document.getElementById('namaInstansi').value,
-      namaAplikasi : document.getElementById('namaAplikasi').value,
-      logoUrl      : document.getElementById('logoUrl').value,
-      backgroundUrl: document.getElementById('backgroundUrl').value,
-      warnaTema    : document.getElementById('warnaTema').value,
+      namaInstansi  : document.getElementById('namaInstansi').value,
+      namaAplikasi  : document.getElementById('namaAplikasi').value,
+      logoUrl,
+      backgroundUrl,
+      warnaTema     : document.getElementById('warnaTema').value,
     },
     idAkun: sesi.idAkun
   });
   setBtnLoading('teks1','spin1',false,'💾 Simpan Identitas');
-  SIARSIP.toast(hasil.pesan || (hasil.sukses ? 'Tersimpan' : 'Gagal'), hasil.sukses ? 'sukses' : 'error');
+  SIARSIP.toast(hasil.pesan || (hasil.sukses ? 'Identitas berhasil disimpan' : 'Gagal'), hasil.sukses ? 'sukses' : 'error');
 }
 
 async function simpanKeamanan() {
